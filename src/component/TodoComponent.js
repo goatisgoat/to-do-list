@@ -5,11 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const TodoComponent = () => {
-  const [dividedBtn, setDividedBtn] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-
-  const [todoList, setTodoList] = useState([]);
   const modalRef = useRef();
+  const [dividedBtn, setDividedBtn] = useState(false);
+
+  const [inputValue, setInputValue] = useState("");
+  const [todoList, setTodoList] = useState([]);
 
   // 모달 박스
   const modalOutSideClick = (e) => {
@@ -23,23 +23,18 @@ const TodoComponent = () => {
     setDividedBtn(dividedBtn === false ? true : false);
   };
 
+  // 인풋 값 업데이트
+  const ongoingChangeInput = (e) => {
+    setInputValue(e.target.value);
+  };
+
   //폼 제출 이벤트
   const ongoingInput = (e) => {
     e.preventDefault();
 
-    //사용자 입력 값 확인
-    if (inputValue === "") {
-      return alert("값을 입력해주세요");
-    }
-
     setTodoList([...todoList, { inputValue, isWork: true }]);
     setInputValue("");
     setDividedBtn(false);
-  };
-
-  // 인풋 값 업데이트
-  const ongoingChangeInput = (e) => {
-    setInputValue(e.target.value);
   };
 
   //삭제버튼

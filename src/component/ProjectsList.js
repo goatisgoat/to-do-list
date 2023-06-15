@@ -36,8 +36,6 @@ const ProjectsList = () => {
     setDividedBtn(dividedBtn === false ? true : false);
   };
 
-  // thatDate
-
   //폼 제출
   const formEvent = (e) => {
     e.preventDefault();
@@ -52,14 +50,11 @@ const ProjectsList = () => {
       setTodoList(
         todoList.filter((item, i) => i !== Number(e.target.parentNode.id))
       );
+
       //도트 리스트도 지워줘야 그 날짜 값의 도트(.)가 사라짐
-      for (let i = 0; i < dotList.length; i++) {
-        if (dotList[i] === whichDate) {
-          dotList.splice(i, 1);
-          setDotList(dotList);
-          break;
-        }
-      }
+      let index = dotList.indexOf(whichDate);
+      dotList.splice(index, 1);
+      setDotList(dotList);
     }
   };
 
