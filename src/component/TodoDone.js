@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus } from "@fortawesome/free-solid-svg-icons";
 
-const TodoDone = ({ item, onRemove, key, index, goToWork }) => {
+const TodoDone = ({ item, onRemove, index, goToWork }) => {
   const [textLine, setTextLine] = useState(false);
   const ischecked = (e) => {
     setTextLine(e.target.checked);
