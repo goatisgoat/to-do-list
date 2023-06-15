@@ -127,13 +127,22 @@ button {
 .ongoing-modal-input button {
   padding: 6px 23px;
   border-radius: 20px;
+  background: linear-gradient(
+    90.21deg,
+    rgba(212, 80, 159, 0.5) -5.91%,
+    rgba(85, 58, 207, 0.5) 111.58%
+  );
   border: none;
   margin: 0 10px;
   margin-top: 50px;
   font-size: 15px;
-  color: black;
+  color: white;
   font-weight: 800;
   font-family: sans-serif;
+}
+
+.ongoing-modal-input button:active {
+  transform: scale(1.1);
 }
 
 /* 캘린더 */
