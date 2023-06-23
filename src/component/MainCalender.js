@@ -1,28 +1,32 @@
-import React, { useState } from "react";
-import { useRef } from "react";
+import React, { useState, useRef } from "react";
 import Calendar from "react-calendar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import CalenderTodo from "./CalenderTodo";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addCalenderTodoFunc,
+  deleteCalenderTodoFunc,
+  selectedDotListFunc,
+  DeleteDotListFunc,
+} from "../redux/config/modules/calenderData";
+import uuid from "react-uuid";
 
-const ProjectsList = () => {
-  // 캘린더를 눌러서 변경된 날짜, 사용자가 입력한 인풋 값이 저장됨
-  const [inputValue, setInputValue] = useState({
-    customdate: "",
-    value: "",
-  });
-  // inputValue들을 저장할 배열
-  const [todoList, setTodoList] = useState([]);
-  // 캘린더 라이브러리 초기설정
+const MainCalender = () => {
+  const [inputValue, setInputValue] = useState("");
+
+  // 캘린더 라이브러리
   const [value, onChange] = useState(new Date());
   const moment = require("moment");
-  //캘린더에 일정을 추가하면 점이 찍히는 날짜를 저장
-  const [dotList, setDotList] = useState([]);
-  const modalRef = useRef();
-  // 클릭한 캘린더의 날짜를 알려줌
   const whichDate = moment(value).format("YYYY-MM-DD");
+
   //모달버튼
   const [dividedBtn, setDividedBtn] = useState(false);
+  const modalRef = useRef();
+  //redux
+  const dispatch = useDispatch();
+  const { calenderTodoList } = useSelector((state) => state.calenderData);
+  const { calenderDotList } = useSelector((state) => state.calenderData);
 
   // 모딜창
   const modalOutSideClick = (e) => {
@@ -31,7 +35,6 @@ const ProjectsList = () => {
     }
   };
 
-  // 모딜창 버튼
   const changeBtn = () => {
     setDividedBtn(dividedBtn === false ? true : false);
   };
@@ -39,22 +42,23 @@ const ProjectsList = () => {
   //폼 제출
   const formEvent = (e) => {
     e.preventDefault();
-    setTodoList([...todoList, inputValue]);
-    setDotList([...dotList, whichDate]);
+    const inputObj = {
+      id: uuid(),
+      customdate: whichDate,
+      inputValue,
+    };
+    dispatch(addCalenderTodoFunc(inputObj));
+    dispatch(selectedDotListFunc(whichDate));
     setDividedBtn(false);
   };
 
-  // Monthly To Do List 내용물 삭제
-  const deleteDateInfo = (e) => {
+  // Monthly To Do List 삭제
+  const deleteDateInfo = (id) => {
     if (window.confirm("삭제하시겠습니까?")) {
-      setTodoList(
-        todoList.filter((item, i) => i !== Number(e.target.parentNode.id))
-      );
+      dispatch(deleteCalenderTodoFunc(id));
 
-      //도트 리스트도 지워줘야 그 날짜 값의 도트(.)가 사라짐
-      let index = dotList.indexOf(whichDate);
-      dotList.splice(index, 1);
-      setDotList(dotList);
+      let index = calenderDotList.indexOf(whichDate);
+      dispatch(DeleteDotListFunc(index));
     }
   };
 
@@ -80,7 +84,6 @@ const ProjectsList = () => {
         </button>
       </h1>
       <div className="monthly-container">
-        {/* 모달 인풋 */}
         {dividedBtn === true ? (
           <div
             className="ongoing-modal-background"
@@ -98,12 +101,7 @@ const ProjectsList = () => {
                 <input
                   type="text"
                   required
-                  onChange={(e) =>
-                    setInputValue({
-                      customdate: moment(value).format("YYYY-MM-DD"),
-                      value: e.target.value,
-                    })
-                  }
+                  onChange={(e) => setInputValue(e.target.value)}
                 />
                 <div className="underline"></div>
                 <label>To do List</label>
@@ -117,7 +115,6 @@ const ProjectsList = () => {
         ) : (
           ""
         )}
-        {/* 모달 인풋 */}
 
         <div className="calender-container">
           {/* 캘린더 */}
@@ -135,7 +132,9 @@ const ProjectsList = () => {
               const html = [];
               // 현재 날짜가 post 작성한 날짜 배열(mark)에 있다면, dot div 추가
               if (
-                dotList.find((x) => x === moment(date).format("YYYY-MM-DD"))
+                calenderDotList.find(
+                  (x) => x === moment(date).format("YYYY-MM-DD")
+                )
               ) {
                 html.push(<div className="dot"></div>);
               }
@@ -150,27 +149,24 @@ const ProjectsList = () => {
               );
             }}
           />{" "}
-          {/* 캘린더 */}
         </div>
 
         <div className="text-gray-500 mt-4 calender-info">
-          {/* 캘린더 옆 to do List 박스 */}
+          {/* 캘린더 옆 to do List */}
           <h4 style={{ color: "#6f48eb" }}>
             {moment(value).format("YYYY-MM-DD")}
           </h4>
 
           <div>
-            {todoList.map((item, i) => {
+            {calenderTodoList.map((item) => {
               return item.customdate === whichDate ? (
                 <CalenderTodo
                   item={item}
-                  key={i}
-                  i={i}
+                  key={item.id}
+                  id={item.id}
                   deleteDateInfo={deleteDateInfo}
                 />
-              ) : (
-                ""
-              );
+              ) : null;
             })}
           </div>
         </div>
@@ -179,4 +175,4 @@ const ProjectsList = () => {
   );
 };
 
-export default ProjectsList;
+export default MainCalender;

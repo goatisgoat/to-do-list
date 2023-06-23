@@ -3,27 +3,35 @@ import ShowTodos from "./ShowTodos";
 import TodoDone from "./TodoDone";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addTodoFunc,
+  deleteTodoFunc,
+  finishWorkFunc,
+  goToWorkFunc,
+} from "../redux/config/modules/bottomTodo";
+import uuid from "react-uuid";
 
 const TodoComponent = () => {
   const modalRef = useRef();
   const [dividedBtn, setDividedBtn] = useState(false);
 
   const [inputValue, setInputValue] = useState("");
-  const [todoList, setTodoList] = useState([]);
 
-  // 모달 박스
+  const dispatch = useDispatch();
+  const { todoList } = useSelector((state) => state.bottomTodo);
+
+  // 모달
   const modalOutSideClick = (e) => {
     if (modalRef.current === e.target) {
       setDividedBtn(false);
     }
   };
-
-  // 모달 박스 버튼
   const changeBtn = () => {
     setDividedBtn(dividedBtn === false ? true : false);
   };
 
-  // 인풋 값 업데이트
+  // 인풋
   const ongoingChangeInput = (e) => {
     setInputValue(e.target.value);
   };
@@ -31,35 +39,26 @@ const TodoComponent = () => {
   //폼 제출 이벤트
   const ongoingInput = (e) => {
     e.preventDefault();
-
-    setTodoList([...todoList, { inputValue, isWork: true }]);
+    dispatch(addTodoFunc({ id: uuid(), inputValue, isWork: true }));
     setInputValue("");
     setDividedBtn(false);
   };
 
   //삭제버튼
-  const onRemove = (index) => {
+  const onRemove = (id) => {
     if (window.confirm("삭제하시겠습니까?")) {
-      setTodoList(todoList.filter((item, n) => n !== index));
+      dispatch(deleteTodoFunc(id));
     }
   };
 
   //완료버튼
-  const finishWork = (index) => {
-    setTodoList(
-      todoList.map((item, i) => {
-        return i === index ? { ...item, isWork: false } : item;
-      })
-    );
+  const finishWork = (id) => {
+    dispatch(finishWorkFunc(id));
   };
 
-  //완료를 다시 working으로 이동
-  const goToWork = (index) => {
-    setTodoList(
-      todoList.map((item, i) => {
-        return i === index ? { ...item, isWork: true } : item;
-      })
-    );
+  //완료를 다시 working
+  const goToWork = (id) => {
+    dispatch(goToWorkFunc(id));
   };
   return (
     <>
@@ -97,17 +96,16 @@ const TodoComponent = () => {
       ) : (
         ""
       )}
-      {/* 모달 박스 */}
 
       {/* to do list */}
       {/* 리액트에서는 오브젝트 타입을 그대로 랜더링 할 수 없다.*/}
+
       <h2 style={{ color: "#ada5c5" }}>Working</h2>
       <div className="ShowTodos-container">
-        {todoList.map((item, i) => {
+        {todoList.map((item) => {
           return item.isWork === true ? (
             <ShowTodos
-              key={i}
-              index={i}
+              key={item.id}
               item={item}
               onRemove={onRemove}
               finishWork={finishWork}
@@ -119,11 +117,10 @@ const TodoComponent = () => {
       </div>
       <h2 style={{ color: "#a9d4ff" }}>Done</h2>
       <div className="ShowTodos-container">
-        {todoList.map((item, i) => {
+        {todoList.map((item) => {
           return item.isWork === false ? (
             <TodoDone
-              key={i}
-              index={i}
+              key={item.id}
               item={item}
               onRemove={onRemove}
               goToWork={goToWork}

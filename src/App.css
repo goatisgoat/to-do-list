@@ -1,6 +1,7 @@
 /* ----------기본설정----------- */
 html {
   background-color: rgba(242, 242, 242, 0.629);
+  height: 100%;
 }
 
 input[type="checkbox"] {
@@ -518,7 +519,7 @@ abbr[title] {
   border-bottom-left-radius: 10px;
   border-top-left-radius: 10px;
   /* border-radius: 10px; */
-  background-color: #a693c7;
+  background-color: #6e48ebbf;
 }
 
 .priority-done::before {
