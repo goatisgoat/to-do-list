@@ -4,7 +4,8 @@
 
 
 ## 주요기능
-달력 todo-list 작성, 삭제
+달력 todo-list 작성, 삭제   
+
 그날의 todo-list 작성, 삭제
 
 
