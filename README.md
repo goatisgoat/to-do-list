@@ -19,7 +19,7 @@ Monthly-todo-list
 
 ![image](https://github.com/goatisgoat/to-do-list/assets/129598273/7a66fc1f-3374-452d-ae00-b9044b2e2665)
 
-ongoing-todo-list
+Ongoing-todo-list
 
 ![image](https://github.com/goatisgoat/to-do-list/assets/129598273/7aca0ff5-cf66-4ea6-bd91-b264cd25eba5)
 
